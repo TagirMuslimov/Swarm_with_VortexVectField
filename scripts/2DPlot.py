@@ -7,7 +7,7 @@ from matplotlib import cm
 
 plt.rcParams["figure.autolayout"] = True
 
-df = pd.read_csv(r'C:\Users\tagir\Documents\![Мои научные статьи]\Статья Информатика и АВтоматизация 23\![Data]\3rd try\sim3_20240319-225449_NoAPF.csv', header=0, delimiter=';')
+df = pd.read_csv('/home/tagir/Simulation/20240321-163926_NoAPF4Copt2ndOrder.csv', header=0, delimiter=';')
 
 cols = df.columns
 for col in cols:

@@ -305,7 +305,7 @@ def forward_CurlFree(cf1, cf2, cf3, cf4):
             #          px_4=px_4, py_4=py_4, pz_4=pz_4, vx_4=vx_4, vy_4=vy_4,  vz_4=vz_4, roll_4=roll_4, pitch_4=pitch_4, yaw_4=yaw_4,
             #          )
 
-            init_log(i=i, T_Z=T_Z, k_f=k_f, distance_12=distance_12, distance_13=distance_13, distance_14=distance_14, distance_23=distance_23, distance_24=distance_24, distance_34=distance_34,
+            init_log(i=i, T_Z=T_Z, k_f=k_f, safety_radius=safety_radius, distance_12=distance_12, distance_13=distance_13, distance_14=distance_14, distance_23=distance_23, distance_24=distance_24, distance_34=distance_34,
                      px_1=px_1, py_1=py_1, pz_1=pz_1, vx_1=vx_1, vy_1=vy_1,  vz_1=vz_1, 
                      px_2=px_2, py_2=py_2, pz_2=pz_2, vx_2=vx_2, vy_2=vy_2,  vz_2=vz_2, 
                      px_3=px_3, py_3=py_3, pz_3=pz_3, vx_3=vx_3, vy_3=vy_3,  vz_3=vz_3, 
@@ -319,7 +319,7 @@ def forward_CurlFree(cf1, cf2, cf3, cf4):
         #              px_4=px_4, py_4=py_4, pz_4=pz_4, vx_4=vx_4, vy_4=vy_4, vz_4=vz_4, roll_4=roll_4, pitch_4=pitch_4, yaw_4=yaw_4,
         #              )
         
-        write_log(i=i, T_Z=T_Z, k_f=k_f, distance_12=distance_12, distance_13=distance_13, distance_14=distance_14, distance_23=distance_23, distance_24=distance_24, distance_34=distance_34,
+        write_log(i=i, T_Z=T_Z, k_f=k_f, safety_radius=safety_radius, distance_12=distance_12, distance_13=distance_13, distance_14=distance_14, distance_23=distance_23, distance_24=distance_24, distance_34=distance_34,
                      px_1=px_1, py_1=py_1, pz_1=pz_1, vx_1=vx_1, vy_1=vy_1, vz_1=vz_1, 
                      px_2=px_2, py_2=py_2, pz_2=pz_2, vx_2=vx_2, vy_2=vy_2, vz_2=vz_2, 
                      px_3=px_3, py_3=py_3, pz_3=pz_3, vx_3=vx_3, vy_3=vy_3, vz_3=vz_3, 
