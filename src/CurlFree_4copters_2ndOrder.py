@@ -11,7 +11,7 @@ from cflib.crazyflie.log import LogConfig
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 
 timestr = time.strftime("%Y%m%d-%H%M%S")
-fp = open(timestr + '_NoAPF4Copt2ndOrder.csv', 'w')
+fp = open(timestr + '_NoCurl4Copt2ndOrder.csv', 'w')
 
 # URI1 = 'radio://0/80/2M/E7E7E7E711'
 # URI2 = 'radio://0/80/2M/E7E7E7E712'
@@ -384,13 +384,13 @@ def axis_accel_APF(distance_ab, px_a, py_a, px_b, py_b, vx_a, vy_a, vx_b, vy_b):
         ############# APF with Curl Free Vector Field Modification:######################
         # steps = 250
         # for i in range(steps):
-        ax_APF = 11.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3 + 111*(vx_a - vx_b) - 110.1*(vy_a - vy_b)
-        ay_APF = 11.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3 + 111*(vy_a - vy_b) + 110.1*(vx_a - vx_b)
+        # ax_APF = 11.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3 + 111*(vx_a - vx_b) - 110.1*(vy_a - vy_b)
+        # ay_APF = 11.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3 + 111*(vy_a - vy_b) + 110.1*(vx_a - vx_b)
         # ax_APF = 12.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3
         # ay_APF = 12.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3
         ############# Standard APF:######################################################
-        # ax_APF = 22 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3
-        # ay_APF = 22 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3
+        ax_APF = 22 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3
+        ay_APF = 22 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3
 
         if ax_APF > ax_APF_max:
             ax_APF = ax_APF_max
