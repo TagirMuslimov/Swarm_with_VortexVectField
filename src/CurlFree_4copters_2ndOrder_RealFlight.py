@@ -11,12 +11,12 @@ from cflib.crazyflie.log import LogConfig
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 
 timestr = time.strftime("%Y%m%d-%H%M%S")
-fp = open(timestr + '_CurlFree4Copt.csv', 'w')
+fp = open(timestr + '_NoAPF4Copt2ndOrder.csv', 'w')
 
-# URI1 = 'radio://0/80/2M/E7E7E7E711'
-# URI2 = 'radio://0/80/2M/E7E7E7E712'
-# URI3 = 'radio://0/80/2M/E7E7E7E713'
-# URI4 = 'radio://0/80/2M/E7E7E7E714'
+URI1 = 'radio://0/80/2M/E7E7E7E711'
+URI2 = 'radio://0/80/2M/E7E7E7E712'
+URI3 = 'radio://0/80/2M/E7E7E7E713'
+URI4 = 'radio://0/80/2M/E7E7E7E714'
 
 # URI1 = 'radio://0/30/2M/E7E7E7E701'
 # URI2 = 'radio://0/30/2M/E7E7E7E702'
@@ -33,11 +33,12 @@ uris = {
 }
 
 MIN_BAT = 2.8
-k_f = 0.5
+k_f = 15.5
+k_f_v = 5.2
 safety_radius = 0.4
 T_Z = 0.3
 
-v_axis_list = [[0,0],[0,0],[0,0],[0,0]]
+a_axis_list = [[0,0],[0,0],[0,0],[0,0]]
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -192,7 +193,7 @@ def write_log(**log_vars):
 
 
 def forward_CurlFree(cf1, cf2, cf3, cf4):
-    steps = 1100
+    steps = 700
     for i in range(steps):
 
         # print("forward_CurlFree" + str(i))
@@ -260,41 +261,45 @@ def forward_CurlFree(cf1, cf2, cf3, cf4):
         distance_24 = distance_between_copters(px_2, py_2, px_4, py_4)
         distance_34 = distance_between_copters(px_3, py_3, px_4, py_4)
 
-        copters = [[px_1, py_1], [px_2, py_2], [px_3, py_3], [px_4, py_4]]
+        copters_coordinates = [[px_1, py_1], [px_2, py_2], [px_3, py_3], [px_4, py_4]]
+        copters_velocities  = [[vx_1, vy_1], [vx_2, vy_2], [vx_3, vy_3], [vx_4, vy_4]]
 
         break_out_flag = False
         for i in range(4):            
             for j in [x for x in range(4) if x != i]:
                 # print ("i:", i, "j:", j)
-                distance_ab = distance_between_copters(copters[i][0], copters[i][1], copters[j][0], copters[j][1])
+                distance_ab = distance_between_copters(copters_coordinates[i][0], copters_coordinates[i][1], copters_coordinates[j][0], copters_coordinates[j][1])
                 # print(copters[i][0], copters[i][1], copters[j][0], copters[j][1])
                 # print(distance_ab)
                 if distance_ab < safety_radius:
-                    v_axis_list[i][0], v_axis_list[i][1] = axis_velocity_APF(distance_ab, copters[i][0], copters[i][1], copters[j][0], copters[j][1])
-                    v_axis_list[j][0], v_axis_list[j][1] = axis_velocity_APF(distance_ab, copters[j][0], copters[j][1], copters[i][0], copters[i][1])
+                    a_axis_list[i][0], a_axis_list[i][1] = axis_accel_APF(distance_ab, copters_coordinates[i][0], copters_coordinates[i][1], copters_coordinates[j][0], copters_coordinates[j][1],
+                                                                             copters_velocities[i][0], copters_velocities[i][1], copters_velocities[j][0], copters_velocities[j][1]
+                                                                             )
+                    a_axis_list[j][0], a_axis_list[j][1] = axis_accel_APF(distance_ab, copters_coordinates[j][0], copters_coordinates[j][1], copters_coordinates[i][0], copters_coordinates[i][1],
+                                                                             copters_velocities[j][0], copters_velocities[j][1], copters_velocities[i][0], copters_velocities[i][1]
+                                                                             )
                     break_out_flag = True
                     break          
                    
             if break_out_flag:
                 continue
-            v_axis_list[i][0], v_axis_list[i][1] = axis_velocity(i, px_1, py_1, px_2, py_2, px_3, py_3, px_4, py_4)
+            a_axis_list[i][0], a_axis_list[i][1] = axis_accel(i, px_1, py_1, px_2, py_2, px_3, py_3, px_4, py_4, vx_1, vy_1, vx_2, vy_2, vx_3, vy_3, vx_4, vy_4)
 
-        vx1, vy1 = v_axis_list[0][0], v_axis_list[0][1]
-        vx2, vy2 = v_axis_list[1][0], v_axis_list[1][1]
-        vx3, vy3 = v_axis_list[2][0], v_axis_list[2][1]
-        vx4, vy4 = v_axis_list[3][0], v_axis_list[3][1]
-        print ("vx3, vy3:", vx3, vy3)
+        ax1, ay1 = a_axis_list[0][0], a_axis_list[0][1]
+        ax2, ay2 = a_axis_list[1][0], a_axis_list[1][1]
+        ax3, ay3 = a_axis_list[2][0], a_axis_list[2][1]
+        ax4, ay4 = a_axis_list[3][0], a_axis_list[3][1]
+        print ("ax3, ay3:", ax3, ay3)
 
-        setPx1 = px_1 + vx1/10
-        setPx2 = px_2 + vx2/10
-        setPx3 = px_3 + vx3/10
-        setPx4 = px_4 + vx4/10
+        setPx1 = px_1 + vx_1/10 + ax1/(2 * 100)
+        setPx2 = px_2 + vx_2/10 + ax2/(2 * 100)
+        setPx3 = px_3 + vx_3/10 + ax3/(2 * 100)
+        setPx4 = px_4 + vx_4/10 + ax4/(2 * 100)
 
-        setPy1 = py_1 + vy1/10
-        setPy2 = py_2 + vy2/10
-        setPy3 = py_3 + vy3/10
-        setPy4 = py_4 + vy4/10
-
+        setPy1 = py_1 + vy_1/10 + ay1/(2 * 100)
+        setPy2 = py_2 + vy_2/10 + ay2/(2 * 100)
+        setPy3 = py_3 + vy_3/10 + ay3/(2 * 100)
+        setPy4 = py_4 + vy_4/10 + ay4/(2 * 100)
         print ("setPx3:", setPx3, "setPy3:", setPy3)
 
         if i == 0:
@@ -305,7 +310,7 @@ def forward_CurlFree(cf1, cf2, cf3, cf4):
             #          px_4=px_4, py_4=py_4, pz_4=pz_4, vx_4=vx_4, vy_4=vy_4,  vz_4=vz_4, roll_4=roll_4, pitch_4=pitch_4, yaw_4=yaw_4,
             #          )
 
-            init_log(i=i, T_Z=T_Z, k_f=k_f, safety_radius=safety_radius, distance_12=distance_12, distance_13=distance_13, distance_14=distance_14, distance_23=distance_23, distance_24=distance_24, distance_34=distance_34,
+            init_log(i=i, T_Z=T_Z, k_f=k_f, k_f_v = k_f_v, safety_radius=safety_radius, distance_12=distance_12, distance_13=distance_13, distance_14=distance_14, distance_23=distance_23, distance_24=distance_24, distance_34=distance_34,
                      px_1=px_1, py_1=py_1, pz_1=pz_1, vx_1=vx_1, vy_1=vy_1,  vz_1=vz_1, 
                      px_2=px_2, py_2=py_2, pz_2=pz_2, vx_2=vx_2, vy_2=vy_2,  vz_2=vz_2, 
                      px_3=px_3, py_3=py_3, pz_3=pz_3, vx_3=vx_3, vy_3=vy_3,  vz_3=vz_3, 
@@ -319,7 +324,7 @@ def forward_CurlFree(cf1, cf2, cf3, cf4):
         #              px_4=px_4, py_4=py_4, pz_4=pz_4, vx_4=vx_4, vy_4=vy_4, vz_4=vz_4, roll_4=roll_4, pitch_4=pitch_4, yaw_4=yaw_4,
         #              )
         
-        write_log(i=i, T_Z=T_Z, k_f=k_f, safety_radius=safety_radius, distance_12=distance_12, distance_13=distance_13, distance_14=distance_14, distance_23=distance_23, distance_24=distance_24, distance_34=distance_34,
+        write_log(i=i, T_Z=T_Z, k_f=k_f, k_f_v = k_f_v, safety_radius=safety_radius, distance_12=distance_12, distance_13=distance_13, distance_14=distance_14, distance_23=distance_23, distance_24=distance_24, distance_34=distance_34,
                      px_1=px_1, py_1=py_1, pz_1=pz_1, vx_1=vx_1, vy_1=vy_1, vz_1=vz_1, 
                      px_2=px_2, py_2=py_2, pz_2=pz_2, vx_2=vx_2, vy_2=vy_2, vz_2=vz_2, 
                      px_3=px_3, py_3=py_3, pz_3=pz_3, vx_3=vx_3, vy_3=vy_3, vz_3=vz_3, 
@@ -373,49 +378,53 @@ def distance_between_copters(px_a, py_a, px_b, py_b):
     distance_ab=math.sqrt((px_a - px_b)**2 + (py_a - py_b)**2)
     return distance_ab
 
-def axis_velocity_APF(distance_ab, px_a, py_a, px_b, py_b):
-        vx_APF_max = 0.2
-        vy_APF_max = 0.2
+def axis_accel_APF(distance_ab, px_a, py_a, px_b, py_b, vx_a, vy_a, vx_b, vy_b):
+        ax_APF_max = 0.1
+        ay_APF_max = 0.1
         ############# APF with Curl Free Vector Field Modification:######################
-        # vx_APF = - 0.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3 + 0.2*(px_a - px_b)
-        # vy_APF = 0.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3 + 0.2*(py_a - py_b)
+        # steps = 250
+        # for i in range(steps):
+        ax_APF = 11.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3 + 111*(vx_a - vx_b) - 110.1*(vy_a - vy_b)
+        ay_APF = 11.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3 + 111*(vy_a - vy_b) + 110.1*(vx_a - vx_b)
+        # ax_APF = 12.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3
+        # ay_APF = 12.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3
         ############# Standard APF:######################################################
-        vx_APF = 0.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3
-        vy_APF = 0.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3
+        # ax_APF = 22 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3
+        # ay_APF = 22 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3
 
-        if vx_APF > vx_APF_max:
-            vx_APF = vx_APF_max
+        if ax_APF > ax_APF_max:
+            ax_APF = ax_APF_max
 
-        if vy_APF > vy_APF_max:
-            vy_APF = vy_APF_max
+        if ay_APF > ay_APF_max:
+            ay_APF = ay_APF_max
 
-        return (vx_APF, vy_APF)
+        return (ax_APF, ay_APF)
 
-def axis_velocity(i, px1, py1, px2, py2, px3, py3, px4, py4):
-        vxa = 0 
-        vya = 0
-        vxa_max = 0.2
-        vya_max = 0.2
+def axis_accel(i, px1, py1, px2, py2, px3, py3, px4, py4, vx1_f, vy1_f, vx2_f, vy2_f, vx3_f, vy3_f, vx4_f, vy4_f):
+        axa = 0 
+        aya = 0
+        axa_max = 0.1
+        aya_max = 0.1
         if i==0:
-            vxa =  -k_f * (px1 - px2 - 0) 
-            vya =  -k_f * (py1 - py2 + 1) 
+            axa =  -k_f * (px1 - px2 - 0) - k_f_v * (vx1_f - vx2_f)
+            aya =  -k_f * (py1 - py2 + 1) - k_f_v * (vy1_f - vy2_f) 
         elif i==1:
-            vxa =  -k_f * (-px1 + 2*px2 - px3 + 1) 
-            vya =  -k_f * (-py1 + 2*py2 - py3 - 1) 
+            axa =  -k_f * (-px1 + 2*px2 - px3 + 1) - k_f_v * (-vx1_f + 2*vx2_f - vx3_f) 
+            aya =  -k_f * (-py1 + 2*py2 - py3 - 1) - k_f_v * (-vy1_f + 2*vy2_f - vy3_f) 
         elif i==2:
-            vxa =  -k_f * (-px2 + 2*px3 - px4 - 1) 
-            vya =  -k_f * (-py2 + 2*py3 - py4 - 1) 
+            axa =  -k_f * (-px2 + 2*px3 - px4 - 1) - k_f_v * (-vx2_f + 2*vx3_f - vx4_f) 
+            aya =  -k_f * (-py2 + 2*py3 - py4 - 1) - k_f_v * (-vy2_f + 2*vy3_f - vy4_f)
         elif i==3:
-            vxa =  -k_f * (-px3 + px4 + 0) 
-            vya =  -k_f * (-py3 + py4 + 1) 
+            axa =  -k_f * (-px3 + px4 + 0) - k_f_v * (-vx3_f + vx4_f)
+            aya =  -k_f * (-py3 + py4 + 1) - k_f_v * (-vy3_f + vy4_f) 
         
-        if vxa > vxa_max:
-            vxa = vxa_max
+        if axa > axa_max:
+            axa = axa_max
 
-        if vya > vya_max:
-            vya = vya_max
+        if aya > aya_max:
+            aya = aya_max
 
-        return (vxa, vya)    
+        return (axa, aya)    
 
 def velocity(va, vb):
         v = math.sqrt((va)**2 + (vb)**2)
@@ -426,10 +435,10 @@ if __name__ == '__main__':
 
     cflib.crtp.init_drivers(enable_sim_driver=True)
 
-    with SyncCrazyflie('radio://0/30/2M/E7E7E7E701', cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf1:
-        with SyncCrazyflie('radio://0/30/2M/E7E7E7E702', cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf2:
-            with SyncCrazyflie('radio://0/30/2M/E7E7E7E703', cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf3:
-                with SyncCrazyflie('radio://0/30/2M/E7E7E7E704', cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf4:
+    with SyncCrazyflie(URI1, cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf1:
+        with SyncCrazyflie(URI2, cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf2:
+            with SyncCrazyflie(URI3, cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf3:
+                with SyncCrazyflie(URI4, cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf4:
                     logconf1 = LogConfig(name='Position', period_in_ms=10)
                     logconf1.add_variable('kalman.stateX', 'float')
                     logconf1.add_variable('kalman.stateY', 'float')
@@ -500,10 +509,10 @@ if __name__ == '__main__':
                     cf3 = scf3.cf
                     cf4 = scf4.cf
 
-                    # take off  
+                    # take off
                     take_off(cf1, cf2, cf3, cf4, T_Z)
 
-                    # flight 
+                    # flight
                     forward_CurlFree(cf1, cf2, cf3, cf4)
 
                     # landing

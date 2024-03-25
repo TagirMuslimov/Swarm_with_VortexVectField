@@ -13,10 +13,10 @@ from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 timestr = time.strftime("%Y%m%d-%H%M%S")
 fp = open(timestr + '_CurlFree4Copt.csv', 'w')
 
-# URI1 = 'radio://0/80/2M/E7E7E7E711'
-# URI2 = 'radio://0/80/2M/E7E7E7E712'
-# URI3 = 'radio://0/80/2M/E7E7E7E713'
-# URI4 = 'radio://0/80/2M/E7E7E7E714'
+URI1 = 'radio://0/80/2M/E7E7E7E711'
+URI2 = 'radio://0/80/2M/E7E7E7E712'
+URI3 = 'radio://0/80/2M/E7E7E7E713'
+URI4 = 'radio://0/80/2M/E7E7E7E714'
 
 # URI1 = 'radio://0/30/2M/E7E7E7E701'
 # URI2 = 'radio://0/30/2M/E7E7E7E702'
@@ -192,7 +192,7 @@ def write_log(**log_vars):
 
 
 def forward_CurlFree(cf1, cf2, cf3, cf4):
-    steps = 1100
+    steps = 500
     for i in range(steps):
 
         # print("forward_CurlFree" + str(i))
@@ -305,7 +305,7 @@ def forward_CurlFree(cf1, cf2, cf3, cf4):
             #          px_4=px_4, py_4=py_4, pz_4=pz_4, vx_4=vx_4, vy_4=vy_4,  vz_4=vz_4, roll_4=roll_4, pitch_4=pitch_4, yaw_4=yaw_4,
             #          )
 
-            init_log(i=i, T_Z=T_Z, k_f=k_f, safety_radius=safety_radius, distance_12=distance_12, distance_13=distance_13, distance_14=distance_14, distance_23=distance_23, distance_24=distance_24, distance_34=distance_34,
+            init_log(i=i, T_Z=T_Z, k_f=k_f, distance_12=distance_12, distance_13=distance_13, distance_14=distance_14, distance_23=distance_23, distance_24=distance_24, distance_34=distance_34,
                      px_1=px_1, py_1=py_1, pz_1=pz_1, vx_1=vx_1, vy_1=vy_1,  vz_1=vz_1, 
                      px_2=px_2, py_2=py_2, pz_2=pz_2, vx_2=vx_2, vy_2=vy_2,  vz_2=vz_2, 
                      px_3=px_3, py_3=py_3, pz_3=pz_3, vx_3=vx_3, vy_3=vy_3,  vz_3=vz_3, 
@@ -319,7 +319,7 @@ def forward_CurlFree(cf1, cf2, cf3, cf4):
         #              px_4=px_4, py_4=py_4, pz_4=pz_4, vx_4=vx_4, vy_4=vy_4, vz_4=vz_4, roll_4=roll_4, pitch_4=pitch_4, yaw_4=yaw_4,
         #              )
         
-        write_log(i=i, T_Z=T_Z, k_f=k_f, safety_radius=safety_radius, distance_12=distance_12, distance_13=distance_13, distance_14=distance_14, distance_23=distance_23, distance_24=distance_24, distance_34=distance_34,
+        write_log(i=i, T_Z=T_Z, k_f=k_f, distance_12=distance_12, distance_13=distance_13, distance_14=distance_14, distance_23=distance_23, distance_24=distance_24, distance_34=distance_34,
                      px_1=px_1, py_1=py_1, pz_1=pz_1, vx_1=vx_1, vy_1=vy_1, vz_1=vz_1, 
                      px_2=px_2, py_2=py_2, pz_2=pz_2, vx_2=vx_2, vy_2=vy_2, vz_2=vz_2, 
                      px_3=px_3, py_3=py_3, pz_3=pz_3, vx_3=vx_3, vy_3=vy_3, vz_3=vz_3, 
@@ -374,14 +374,14 @@ def distance_between_copters(px_a, py_a, px_b, py_b):
     return distance_ab
 
 def axis_velocity_APF(distance_ab, px_a, py_a, px_b, py_b):
-        vx_APF_max = 0.2
-        vy_APF_max = 0.2
+        vx_APF_max = 0.1
+        vy_APF_max = 0.1
         ############# APF with Curl Free Vector Field Modification:######################
-        # vx_APF = - 0.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3 + 0.2*(px_a - px_b)
-        # vy_APF = 0.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3 + 0.2*(py_a - py_b)
+        vx_APF = - 0.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3 + 0.2*(px_a - px_b)
+        vy_APF = 0.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3 + 0.2*(py_a - py_b)
         ############# Standard APF:######################################################
-        vx_APF = 0.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3
-        vy_APF = 0.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3
+        # vx_APF = 0.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3
+        # vy_APF = 0.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3
 
         if vx_APF > vx_APF_max:
             vx_APF = vx_APF_max
@@ -394,8 +394,8 @@ def axis_velocity_APF(distance_ab, px_a, py_a, px_b, py_b):
 def axis_velocity(i, px1, py1, px2, py2, px3, py3, px4, py4):
         vxa = 0 
         vya = 0
-        vxa_max = 0.2
-        vya_max = 0.2
+        vxa_max = 0.1
+        vya_max = 0.1
         if i==0:
             vxa =  -k_f * (px1 - px2 - 0) 
             vya =  -k_f * (py1 - py2 + 1) 
@@ -424,12 +424,12 @@ def velocity(va, vb):
 
 if __name__ == '__main__':
 
-    cflib.crtp.init_drivers(enable_sim_driver=True)
+    cflib.crtp.init_drivers()
 
-    with SyncCrazyflie('radio://0/30/2M/E7E7E7E701', cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf1:
-        with SyncCrazyflie('radio://0/30/2M/E7E7E7E702', cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf2:
-            with SyncCrazyflie('radio://0/30/2M/E7E7E7E703', cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf3:
-                with SyncCrazyflie('radio://0/30/2M/E7E7E7E704', cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf4:
+    with SyncCrazyflie(URI1, cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf1:
+        with SyncCrazyflie(URI2, cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf2:
+            with SyncCrazyflie(URI3, cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf3:
+                with SyncCrazyflie(URI4, cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf4:
                     logconf1 = LogConfig(name='Position', period_in_ms=10)
                     logconf1.add_variable('kalman.stateX', 'float')
                     logconf1.add_variable('kalman.stateY', 'float')
