@@ -7,7 +7,7 @@ from matplotlib import cm
 
 plt.rcParams["figure.autolayout"] = True
 
-df = pd.read_csv('/home/tagir/Simulation/20240323-200824_NoCurl4Copt2ndOrder.csv', header=0, delimiter=';')
+df = pd.read_csv('/home/tagir/Simulation and Real Flight/Real Flight/most/20240325-185335_CurlFree4Copt.csv', header=0, delimiter=';')
 
 cols = df.columns
 for col in cols:
@@ -24,15 +24,18 @@ my_cmap = cm.plasma
 ax = df.plot(x='i', y=['distance_12', 'distance_13','distance_14','distance_23','distance_24', 'distance_34'])
 ax.set(xlabel='Time, [ds]', ylabel='Distance between UAVs, [m]')
 
+ax = df.plot(x='i', y=['vx_1', 'vy_1', 'vx_2', 'vy_2', 'vx_3', 'vy_3', 'vx_4', 'vy_4'])
+ax.set(xlabel='Time, [ds]', ylabel='Velocities of UAVs, [m]')
+
 # ax = df.plot(x='i', y=['distance_12'])
 # ax.set(xlabel='Time, [ds]', ylabel='Distance between UAVs, [rad]')
 
 # df.plot(x='i', y=['d_1','d_2', 'd_3'])
 fig, ax = plt.subplots()
-plt_1, = ax.plot(df['px_1'], df['py_1'], label='Copter #1', c=my_cmap(0.09), markevery=[-1], marker='o', markerfacecolor=my_cmap(0.09), markeredgecolor=my_cmap(0.09), markersize=9)
-plt_2, = ax.plot(df['px_2'], df['py_2'], label='Copter #2', c=my_cmap(0.38), markevery=[-1], marker='o', markerfacecolor=my_cmap(0.38), markeredgecolor=my_cmap(0.38), markersize=9)
-plt_3, = ax.plot(df['px_3'], df['py_3'], label='Copter #3', c=my_cmap(0.62), markevery=[-1], marker='o', markerfacecolor=my_cmap(0.62), markeredgecolor=my_cmap(0.62), markersize=9)
-plt_4, = ax.plot(df['px_4'], df['py_4'], label='Copter #4', c=my_cmap(0.8), markevery=[-1], marker='o', markerfacecolor=my_cmap(0.8), markeredgecolor=my_cmap(0.8), markersize=9)
+plt_1, = ax.plot(df['px_1'], df['py_1'], label='Copter #1', c=my_cmap(0.09), markevery=[-1], marker='o', markerfacecolor=my_cmap(0.09), markeredgecolor=my_cmap(0.09), markersize=18)
+plt_2, = ax.plot(df['px_2'], df['py_2'], label='Copter #2', c=my_cmap(0.38), markevery=[-1], marker='o', markerfacecolor=my_cmap(0.38), markeredgecolor=my_cmap(0.38), markersize=18)
+plt_3, = ax.plot(df['px_3'], df['py_3'], label='Copter #3', c=my_cmap(0.62), markevery=[-1], marker='o', markerfacecolor=my_cmap(0.62), markeredgecolor=my_cmap(0.62), markersize=18)
+plt_4, = ax.plot(df['px_4'], df['py_4'], label='Copter #4', c=my_cmap(0.8), markevery=[-1], marker='o', markerfacecolor=my_cmap(0.8), markeredgecolor=my_cmap(0.8), markersize=18)
 ax.legend()
 ax.set(xlabel='East-West Position, [m]', ylabel='North-South Position, [m]', title = 'Trajectories')
 # ax.legend([plt_1, plt_2], ['label1', 'label2'])

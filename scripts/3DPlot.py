@@ -20,7 +20,7 @@ ax = plt.axes(projection='3d')
 
 
 # df = pd.read_csv(r'C:\Users\tagir\Documents\![Crazyflie Flight Tests]\![From Github]\CircularMotion\data\most valuable\3 copters with a moving center\sim3_20240302-203117_NoCurl.csv', header=0, delimiter=';')
-df = pd.read_csv('/home/tagir/Simulation/20240323-200824_NoCurl4Copt2ndOrder.csv', header=0, delimiter=';')
+df = pd.read_csv('/home/tagir/Simulation and Real Flight/Real Flight/most/20240325-185335_CurlFree4Copt.csv', header=0, delimiter=';')
 cols = df.columns
 for col in cols:
     df[col] = df[col].astype(float)
@@ -46,10 +46,10 @@ plt.cla()
 
 # fig, ax = plt.subplots()
 
-plt_1 = ax.plot3D(x_1, y_1, z_1, label='Copter #1', c=my_cmap(0.09), markevery=[-1], marker='o', markerfacecolor=my_cmap(0.09), markeredgecolor=my_cmap(0.09), markersize=9, linewidth=2)
-plt_2 = ax.plot3D(x_2, y_2, z_2, label='Copter #2', c=my_cmap(0.38), markevery=[-1], marker='o', markerfacecolor=my_cmap(0.38), markeredgecolor=my_cmap(0.38), markersize=9, linewidth=2)
-plt_3 = ax.plot3D(x_3, y_3, z_3, label='Copter #3', c=my_cmap(0.62), markevery=[-1], marker='o', markerfacecolor=my_cmap(0.62), markeredgecolor=my_cmap(0.62), markersize=9, linewidth=2)
-plt_4 = ax.plot3D(x_4, y_4, z_4, label='Copter #4', c=my_cmap(0.8), markevery=[-1], marker='o', markerfacecolor=my_cmap(0.8), markeredgecolor=my_cmap(0.8), markersize=9, linewidth=2)
+plt_1 = ax.plot3D(x_1, y_1, z_1, label='Copter #1', c=my_cmap(0.09), markevery=[-1], marker='o', markerfacecolor=my_cmap(0.09), markeredgecolor=my_cmap(1), markersize=18, linewidth=2)
+plt_2 = ax.plot3D(x_2, y_2, z_2, label='Copter #2', c=my_cmap(0.38), markevery=[-1], marker='o', markerfacecolor=my_cmap(0.38), markeredgecolor=my_cmap(1), markersize=18, linewidth=2)
+plt_3 = ax.plot3D(x_3, y_3, z_3, label='Copter #3', c=my_cmap(0.62), markevery=[-1], marker='o', markerfacecolor=my_cmap(0.62), markeredgecolor=my_cmap(1), markersize=18, linewidth=2)
+plt_4 = ax.plot3D(x_4, y_4, z_4, label='Copter #4', c=my_cmap(0.8), markevery=[-1], marker='o', markerfacecolor=my_cmap(0.8), markeredgecolor=my_cmap(1), markersize=18, linewidth=2)
 
 ax.set_xlabel('East-West Position, [m]')
 ax.set_ylabel('North-South Position, [m]')
