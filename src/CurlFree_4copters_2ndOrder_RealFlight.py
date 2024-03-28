@@ -193,7 +193,7 @@ def write_log(**log_vars):
 
 
 def forward_CurlFree(cf1, cf2, cf3, cf4):
-    steps = 700
+    steps = 600
     for i in range(steps):
 
         # print("forward_CurlFree" + str(i))
@@ -379,13 +379,13 @@ def distance_between_copters(px_a, py_a, px_b, py_b):
     return distance_ab
 
 def axis_accel_APF(distance_ab, px_a, py_a, px_b, py_b, vx_a, vy_a, vx_b, vy_b):
-        ax_APF_max = 0.1
-        ay_APF_max = 0.1
+        ax_APF_max = 0.07
+        ay_APF_max = 0.07
         ############# APF with Curl Free Vector Field Modification:######################
         # steps = 250
         # for i in range(steps):
-        ax_APF = 11.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3 + 111*(vx_a - vx_b) - 110.1*(vy_a - vy_b)
-        ay_APF = 11.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3 + 111*(vy_a - vy_b) + 110.1*(vx_a - vx_b)
+        ax_APF = 5.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3 + 50*(vx_a - vx_b) - 55.1*(vy_a - vy_b)
+        ay_APF = 5.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3 + 50*(vy_a - vy_b) + 55.1*(vx_a - vx_b)
         # ax_APF = 12.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3
         # ay_APF = 12.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3
         ############# Standard APF:######################################################
@@ -403,8 +403,8 @@ def axis_accel_APF(distance_ab, px_a, py_a, px_b, py_b, vx_a, vy_a, vx_b, vy_b):
 def axis_accel(i, px1, py1, px2, py2, px3, py3, px4, py4, vx1_f, vy1_f, vx2_f, vy2_f, vx3_f, vy3_f, vx4_f, vy4_f):
         axa = 0 
         aya = 0
-        axa_max = 0.1
-        aya_max = 0.1
+        axa_max = 0.07
+        aya_max = 0.07
         if i==0:
             axa =  -k_f * (px1 - px2 - 0) - k_f_v * (vx1_f - vx2_f)
             aya =  -k_f * (py1 - py2 + 1) - k_f_v * (vy1_f - vy2_f) 
@@ -433,7 +433,7 @@ def velocity(va, vb):
 
 if __name__ == '__main__':
 
-    cflib.crtp.init_drivers(enable_sim_driver=True)
+    cflib.crtp.init_drivers()
 
     with SyncCrazyflie(URI1, cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf1:
         with SyncCrazyflie(URI2, cf=cflib.crazyflie.Crazyflie(rw_cache='./cache')) as scf2:
