@@ -13,4 +13,5 @@
 - No collision avoidance algorithms for drone swarm: https://youtu.be/RCol4bURmTU
 
 ### Real Flight
-- https://youtu.be/_m4bb0NlOJs
+- 1st order model: https://youtu.be/_m4bb0NlOJs
+- 2nd order model: https://youtu.be/djQX9DaK3y0
