@@ -1,3 +1,5 @@
+# Partly based on https://stackoverflow.com/questions/28269379/curve-curvature-in-numpy
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
