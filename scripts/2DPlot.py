@@ -7,7 +7,7 @@ from matplotlib import cm
 
 plt.rcParams["figure.autolayout"] = True
 
-df = pd.read_csv('/home/tagir/Simulation and Real Flight/Real Flight/most/20240325-185335_CurlFree4Copt.csv', header=0, delimiter=';')
+df = pd.read_csv('/home/tagir/Swarm_with_CurlFreeVectField/data/Simulation/20240323-195835_Curl4Copt2ndOrder.csv', header=0, delimiter=';')
 
 cols = df.columns
 for col in cols:
