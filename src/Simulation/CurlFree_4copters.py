@@ -377,11 +377,11 @@ def axis_velocity_APF(distance_ab, px_a, py_a, px_b, py_b):
         vx_APF_max = 0.2
         vy_APF_max = 0.2
         ############# APF with Curl Free Vector Field Modification:######################
-        # vx_APF = - 0.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3 + 0.2*(px_a - px_b)
-        # vy_APF = 0.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3 + 0.2*(py_a - py_b)
+        vx_APF = - 0.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3 + 0.2*(px_a - px_b)
+        vy_APF = 0.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3 + 0.2*(py_a - py_b)
         ############# Standard APF:######################################################
-        vx_APF = 0.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3
-        vy_APF = 0.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3
+        # vx_APF = 0.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3
+        # vy_APF = 0.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3
 
         if vx_APF > vx_APF_max:
             vx_APF = vx_APF_max

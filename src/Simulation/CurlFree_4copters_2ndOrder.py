@@ -382,15 +382,13 @@ def axis_accel_APF(distance_ab, px_a, py_a, px_b, py_b, vx_a, vy_a, vx_b, vy_b):
         ax_APF_max = 0.2
         ay_APF_max = 0.2
         ############# APF with Curl Free Vector Field Modification:######################
-        # steps = 250
-        # for i in range(steps):
-        # ax_APF = 11.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3 + 111*(vx_a - vx_b) - 110.1*(vy_a - vy_b)
-        # ay_APF = 11.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3 + 111*(vy_a - vy_b) + 110.1*(vx_a - vx_b)
-        # ax_APF = 12.2 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3
-        # ay_APF = 12.2 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3
+        v_rel = math.sqrt((vx_a - vx_b)**2 + (vy_a - vy_b)**2)
+        ax_APF = 22 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3 - 15*(-1/2+1/v_rel)*(vx_a - vx_b) / v_rel + 141.2*(vy_a - vy_b) / v_rel
+        ay_APF = 22 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3 - 15*(-1/2+1/v_rel)*(vy_a - vy_b) / v_rel - 141.2*(vx_a - vx_b) / v_rel
+
         ############# Standard APF:######################################################
-        ax_APF = 22 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3
-        ay_APF = 22 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3
+        # ax_APF = 22 * (-1/safety_radius+1/distance_ab) * (px_a - px_b) / distance_ab**3
+        # ay_APF = 22 * (-1/safety_radius+1/distance_ab) * (py_a - py_b) / distance_ab**3
 
         if ax_APF > ax_APF_max:
             ax_APF = ax_APF_max
