@@ -6,7 +6,7 @@ plt.rcParams["figure.figsize"] = [7.50, 3.50]
 plt.rcParams["figure.autolayout"] = True
 ax = plt.axes(projection='3d')
 
-df = pd.read_csv('/home/tagir/Swarm_with_CurlFreeVectField/data/Simulation/20240323-195835_Curl4Copt2ndOrder.csv', header=0, delimiter=';')
+df = pd.read_csv('/home/tagir/Swarm_with_VortexVectField/data/Simulation/20240323-195835_Vortex4Copt2ndOrder.csv', header=0, delimiter=';')
 cols = df.columns
 for col in cols:
     df[col] = df[col].astype(float)

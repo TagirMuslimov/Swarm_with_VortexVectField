@@ -11,7 +11,7 @@ from cflib.crazyflie.log import LogConfig
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 
 timestr = time.strftime("%Y%m%d-%H%M%S")
-fp = open(timestr + '_NoCurl4Copt2ndOrder.csv', 'w')
+fp = open(timestr + '_NoVortex4Copt2ndOrder.csv', 'w')
 
 # URI1 = 'radio://0/80/2M/E7E7E7E711'
 # URI2 = 'radio://0/80/2M/E7E7E7E712'

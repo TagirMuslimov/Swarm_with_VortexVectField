@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 
-df = pd.read_csv('/home/tagir/Swarm_with_CurlFreeVectField/data/Simulation/20240323-195835_Curl4Copt2ndOrder.csv', header=0, delimiter=';')
+df = pd.read_csv('/home/tagir/Swarm_with_VortexVectField/data/Simulation/20240323-195835_Vortex4Copt2ndOrder.csv', header=0, delimiter=';')
 dist_12=df['distance_12'].sum()
 # print('dist_12:', dist_12)
 err_12 = abs (dist_12 - 1000)
